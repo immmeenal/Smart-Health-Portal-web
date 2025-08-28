@@ -89,7 +89,7 @@ const Register = () => {
         </select>
 
         {/* Doctor Specific Fields */}
-        {formData.user_role === "Doctor" && (
+        {formData.user_role === "Provider" && (
           <>
             <input
               type="text"
