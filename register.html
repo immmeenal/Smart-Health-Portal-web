@@ -223,64 +223,96 @@
 }
 
 
-    document.getElementById("registerForm").addEventListener("submit", async (e)=>{
-      e.preventDefault(); setMsg("");
+   document.getElementById("registerForm").addEventListener("submit", async (e) => {
+    e.preventDefault(); 
+    setMsg("");
 
-      const user_role = document.querySelector('input[name="role"]:checked').value; // "Patient" or "Provider"
-      const full_name = document.getElementById("full_name").value.trim();
-      const phone_number = document.getElementById("phone_number").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const confirm_password = document.getElementById("confirm_password").value;
+    const user_role = document.querySelector('input[name="role"]:checked').value;
+    const full_name = document.getElementById("full_name").value.trim();
+    const phone_number = document.getElementById("phone_number").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirm_password = document.getElementById("confirm_password").value;
 
-      if (password !== confirm_password){
-        setMsg("Passwords do not match", "error"); return;
+    // -------------------
+    // FRONTEND VALIDATION
+    // -------------------
+    if (!full_name || full_name.length < 3) {
+      setMsg("Full name must be at least 3 characters", "error"); return;
+    }
+
+    if (phone_number && !/^\d{10,15}$/.test(phone_number)) {
+      setMsg("Phone number must be 10–15 digits", "error"); return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setMsg("Invalid email format", "error"); return;
+    }
+
+    if (password.length < 6) {
+      setMsg("Password must be at least 6 characters", "error"); return;
+    }
+
+    if (password !== confirm_password) {
+      setMsg("Passwords do not match", "error"); return;
+    }
+
+    if (user_role === "Patient") {
+      const dob = document.getElementById("dob").value;
+      if (!dob) {
+        setMsg("Date of birth is required for patients", "error"); return;
+      }
+      const emergency_contact = document.getElementById("emergency_contact").value.trim();
+      if (emergency_contact && !/^\d{10,15}$/.test(emergency_contact)) {
+        setMsg("Emergency contact must be 10–15 digits", "error"); return;
+      }
+    }
+
+    if (user_role === "Provider") {
+      const exp = Number(document.getElementById("experience_years").value) || 0;
+      if (exp < 0) {
+        setMsg("Experience cannot be negative", "error"); return;
+      }
+      const available_days = getAvailableDaysCSV();
+      if (!available_days) {
+        setMsg("Please select at least one available day", "error"); return;
+      }
+    }
+
+    // -------------------
+    // PAYLOAD BUILD
+    // -------------------
+    const payload = { full_name, email, password, phone_number, user_role };
+
+    if (user_role === "Patient") {
+      payload.date_of_birth = document.getElementById("dob").value || null;
+      payload.gender = document.getElementById("gender").value || null;
+      payload.address = document.getElementById("address").value || null;
+      payload.emergency_contact = document.getElementById("emergency_contact").value || null;
+    } else if (user_role === "Provider") {
+      payload.specialization   = document.getElementById("specialization").value || "General";
+      payload.experience_years = Number(document.getElementById("experience_years").value) || 0;
+      payload.available_days   = getAvailableDaysCSV();
+    }
+
+    try {
+      const res = await fetch(`${API}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setMsg(data.error || "Registration failed", "error"); return;
       }
 
-      // Build payload for /api/auth/register (must match your backend)
-      const payload = {
-        full_name,
-        email,
-        password,
-        phone_number,
-        user_role // EXACT capitalization expected by backend
-      };
-
-      if (user_role === "Patient"){
-        payload.dob = document.getElementById("dob").value || null;
-        payload.gender = document.getElementById("gender").value || null;
-        payload.address = document.getElementById("address").value || null;
-        payload.emergency_contact = document.getElementById("emergency_contact").value || null;
-      } else if (user_role === "Provider"){
-        payload.specialization   = document.getElementById("specialization").value || "General";
-        payload.experience_years = Number(document.getElementById("experience_years").value) || 0;
-        payload.available_days   = getAvailableDaysCSV(); // <-- exact days
-        if (!payload.available_days) {
-          // optional UI validation
-          setMsg("Please select at least one available day.", "error");
-          return;
-        }
-      }
-
-
-      try {
-        const res = await fetch(`${API}/auth/register`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-
-        if (!res.ok){
-          setMsg(data.error || "Registration failed", "error"); return;
-        }
-
-        setMsg("✅ Account created! Redirecting to login…");
-        setTimeout(()=> window.location.href = "login.html", 900);
-      } catch (err){
-        setMsg("Server unavailable", "error");
-      }
-    });
-  </script>
+      setMsg("✅ Account created! Redirecting to login…");
+      setTimeout(()=> window.location.href = "login.html", 900);
+    } catch (err) {
+      setMsg("Server unavailable", "error");
+    }
+  });
+</script>
 </body>
 </html>
