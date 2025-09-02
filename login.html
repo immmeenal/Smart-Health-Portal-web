@@ -6,6 +6,39 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+
+     /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .navbar h2 {
+      color: #1a4d8f;
+      font-weight: 700;
+    }
+    .navbar ul {
+      display: flex;
+      list-style: none;
+    }
+    .navbar ul li {
+      margin-left: 20px;
+    }
+    .navbar ul li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .navbar ul li a:hover {
+      color: #1a4d8f;
+    }
   /* Background image styling */
   body::before {
     content: "";
@@ -15,10 +48,24 @@
     filter: blur(2px) brightness(0.6); /* blur + dark overlay */
     z-index: -1; /* keep it behind everything */
   }
+
+
 </style>
 
 </head>
-<body class="min-h-screen flex items-center justify-center p-6 text-white">
+<body>
+    <!-- Navbar -->
+  <nav class="navbar">
+    <h2>Providence</h2>
+    <ul>
+      <li><a href="./index.html">About Us</a></li>
+<li><a href="register.html">Register</a></li>
+
+    </ul>
+  </nav>
+  <div class="min-h-screen flex items-center justify-center p-6 text-white">
+    
+ 
   <div class="w-full max-w-md bg-white/90 shadow-2xl rounded-lg p-6 text-gray-900">
 
     <h1 class="text-2xl font-bold mb-4">Sign in</h1>
@@ -41,6 +88,8 @@
       Don’t have an account?
       <a href="register.html" class="text-blue-600 hover:underline">Register here</a>
     </p>
+     </div>
+     
   </div>
 
   <script>
