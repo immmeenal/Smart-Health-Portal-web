@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Profile</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-6">
+  <div class="max-w-3xl mx-auto space-y-6">
+    <!-- Header -->
+<header class="flex items-center justify-between">
+  <h1 class="text-2xl font-bold">My Profile</h1>
+  <div class="flex items-center space-x-4">
+    <a href="patient-dashboard.html" class="text-blue-600 underline text-sm">Dashboard</a>
+    <button id="logoutBtn" class="text-red-600 underline text-sm">Logout</button>
+  </div>
+</header>
+
+    <!-- Profile card -->
+    <section class="bg-white rounded-2xl shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">Personal Information</h2>
+      <div id="profile" class="grid sm:grid-cols-2 gap-4 text-sm text-gray-700">
+        <p><span class="font-medium">Full Name:</span> <span id="full_name"></span></p>
+        <p><span class="font-medium">Email:</span> <span id="email"></span></p>
+        <p><span class="font-medium">Phone:</span> <span id="phone_number"></span></p>
+        <p><span class="font-medium">Date of Birth:</span> <span id="date_of_birth"></span></p>
+        <p><span class="font-medium">Gender:</span> <span id="gender"></span></p>
+        <p class="sm:col-span-2"><span class="font-medium">Address:</span> <span id="address"></span></p>
+        <p class="sm:col-span-2"><span class="font-medium">Emergency Contact:</span> <span id="emergency_contact"></span></p>
+      </div>
+      <p id="profileMsg" class="text-sm mt-3 hidden"></p>
+    </section>
+  </div>
+
+  <script>
+    const API   = "http://localhost:3000/api";
+    const token = localStorage.getItem("token");
+    const role  = (localStorage.getItem("role") || "").toLowerCase();
+
+    // Guard: only patients can use this page
+    if (!token || role !== "patient") {
+      window.location.replace("login.html");
+    }
+
+    function setMsg(id, text = "", type = "info") {
+      const el = document.getElementById(id);
+      if (!text) { el.textContent = ""; el.className = "text-sm hidden"; return; }
+      el.textContent = text;
+      el.className = "text-sm " + (type === "error" ? "text-red-600" : "text-green-700");
+      el.classList.remove("hidden");
+    }
+
+    async function loadProfile() {
+      try {
+        const res = await fetch(`${API}/patient/me`, {
+          headers: { "Authorization": "Bearer " + token }
+        });
+        if (res.status === 401) { localStorage.clear(); return location.replace("login.html"); }
+        const data = await res.json();
+        if (!res.ok) return setMsg("profileMsg", data.error || "Failed to load profile", "error");
+
+        document.getElementById("full_name").textContent       = data.full_name || "-";
+        document.getElementById("email").textContent           = data.email || "-";
+        document.getElementById("phone_number").textContent    = data.phone_number || "-";
+        document.getElementById("date_of_birth").textContent   = data.date_of_birth ? new Date(data.date_of_birth).toLocaleDateString("en-IN") : "-";
+        document.getElementById("gender").textContent          = data.gender || "-";
+        document.getElementById("address").textContent         = data.address || "-";
+        document.getElementById("emergency_contact").textContent = data.emergency_contact || "-";
+      } catch {
+        setMsg("profileMsg", "Server error", "error");
+      }
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.clear(); location.href = "login.html";
+    });
+
+    // boot
+    loadProfile();
+  </script>
+</body>
+</html>

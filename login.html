@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+  <div class="w-full max-w-md bg-white shadow rounded p-6">
+    <h1 class="text-2xl font-bold mb-4">Sign in</h1>
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium">Email</label>
+        <input id="email" type="email" class="mt-1 w-full border rounded px-3 py-2" required />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Password</label>
+        <input id="password" type="password" class="mt-1 w-full border rounded px-3 py-2" required />
+      </div>
+      <button class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</button>
+    </form>
+
+    <p id="msg" class="text-sm mt-3 hidden"></p>
+
+    <!-- Register link -->
+    <p class="text-center text-sm mt-6">
+      Don’t have an account?
+      <a href="register.html" class="text-blue-600 hover:underline">Register here</a>
+    </p>
+  </div>
+
+  <script>
+    const API = "http://localhost:3000/api";
+
+    function setMsg(text="", type="info"){
+      const el = document.getElementById("msg");
+      if (!text){ el.textContent=""; el.className="text-sm mt-3 hidden"; return; }
+      el.textContent = text;
+      el.className = "text-sm mt-3 " + (type==="error" ? "text-red-600" : "text-green-700");
+      el.classList.remove("hidden");
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", async (e)=>{
+      e.preventDefault(); setMsg("");
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      try {
+        const res = await fetch(`${API}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok){ setMsg(data.error || "Login failed", "error"); return; }
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+
+        const role = (data.role || "").toLowerCase();
+        if (role === "provider") window.location.href = "doctor-dashboard.html";
+        else window.location.href = "patient-dashboard.html";
+      } catch(err){
+        setMsg("Server unavailable", "error");
+      }
+    });
+  </script>
+</body>
+</html>
