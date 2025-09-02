@@ -95,10 +95,21 @@
     }
 
     const CLINIC_TZ = "Asia/Kolkata";
-    const fmtClinic = (dt) => new Intl.DateTimeFormat("en-IN", {
-      timeZone: CLINIC_TZ, year:"numeric", month:"numeric", day:"numeric",
-      hour:"numeric", minute:"2-digit", hour12:true
-    }).format(new Date(dt));
+const fmtClinic = (dt) => {
+  const d = new Date(dt);
+  // subtract 5h30m
+  d.setMinutes(d.getMinutes() - 330);
+  return new Intl.DateTimeFormat("en-IN", {
+    timeZone: CLINIC_TZ,
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  }).format(d);
+};
+
 
     let patients = [];
     let filtered = [];
