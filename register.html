@@ -5,9 +5,23 @@
   <title>Create Account</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+  /* Background image styling */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("https://img.freepik.com/premium-photo/abstract-blur-interior-background_103324-743.jpg") no-repeat center center/cover;
+    filter: blur(2px) brightness(0.6); /* blur + dark overlay */
+    z-index: -1; /* keep it behind everything */
+  }
+</style>
+
 </head>
-<body class="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-  <div class="w-full max-w-2xl bg-white shadow rounded p-6">
+<body class="min-h-screen flex items-center justify-center p-6 text-white">
+
+  <div class="w-full max-w-2xl bg-white/90 shadow-2xl rounded-lg p-6 text-gray-900">
+
     <div class="flex items-center justify-between mb-4">
       <h1 class="text-2xl font-bold">Create Account</h1>
       <a href="login.html" class="text-sm text-blue-600 hover:underline">Back to Login</a>
