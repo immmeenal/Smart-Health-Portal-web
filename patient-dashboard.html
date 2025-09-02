@@ -141,14 +141,22 @@
     // doctorId -> name cache (for table rendering)
     const doctorNameById = new Map();
 
-    // Formatting fallback (only used if server didn't send display_time)
-    const CLINIC_TZ = "Asia/Kolkata";
-    const fmtClinic = (dt) =>
-      new Intl.DateTimeFormat("en-IN", {
-        timeZone: CLINIC_TZ,
-        year: "numeric", month: "short", day: "numeric",
-        hour: "numeric", minute: "2-digit", hour12: true
-      }).format(new Date(dt));
+const toIST = (dt) => {
+  if (!dt) return "";
+
+  // Remove timezone marker (treat as local IST string)
+  const clean = dt.replace("Z", "");
+
+  const [datePart, timePart] = clean.split("T");
+  const [year, month, day]   = datePart.split("-").map(Number);
+  const [hh, mm, ss]         = (timePart || "00:00:00").split(":").map(Number);
+
+  return new Date(year, month - 1, day, hh, mm, ss).toLocaleString("en-IN", {
+    year: "numeric", month: "short", day: "numeric",
+    hour: "numeric", minute: "2-digit", hour12: true
+  });
+};
+
 
     function setMsg(id, text = "", type = "info") {
       const el = document.getElementById(id);
@@ -265,7 +273,8 @@
           const sVal = `${hh}:${mm}:00`;
           const sLbl = `${hh}:${mm}`;
 
-          const slotDateTime = new Date(`${dateVal}T${sVal}`);
+          // Interpret slot as IST
+          const slotDateTime = new Date(`${dateVal}T${sVal}+05:30`);
           const overlap = bookedSlots.some(b => Math.abs((slotDateTime - b) / 60000) < 60);
           if (!overlap) slots.push({ value: sVal, label: sLbl });
         }
@@ -276,33 +285,44 @@
         : `<option>No slots available</option>`;
     }
 
-    /* ---------- Book ---------- */
-    document.getElementById("bookBtn").addEventListener("click", async () => {
-      const doctor_id = document.getElementById("doctor_id").value;
-      const date      = document.getElementById("dateSelect").value;
-      const time      = document.getElementById("time").value; // HH:mm:ss
+   /* ---------- Book ---------- */
+document.getElementById("bookBtn").addEventListener("click", async () => {
+  const doctor_id = document.getElementById("doctor_id").value;
+  const date      = document.getElementById("dateSelect").value; // YYYY-MM-DD
+  const time      = document.getElementById("time").value;       // HH:mm[:ss]
 
-      if (!doctor_id || !date || !time) {
-        return setMsg("bookMsg", "Please select doctor, date and time", "error");
-      }
+  if (!doctor_id || !date || !time) {
+    return setMsg("bookMsg", "Please select doctor, date and time", "error");
+  }
 
-      try {
-        const res = await fetch(`${API}/appointments/my`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-          body: JSON.stringify({ doctor_id, date, time })
-        });
-        if (res.status === 401) { localStorage.clear(); return location.replace("login.html"); }
-        const data = await res.json();
-        if (!res.ok) return setMsg("bookMsg", data.error || "Booking failed", "error");
-
-        setMsg("bookMsg", "✅ Appointment booked");
-        await loadAppointments();
-        await loadAvailability(doctor_id); // refresh slots after booking
-      } catch {
-        setMsg("bookMsg", "Server error", "error");
-      }
+  try {
+    // ✅ Send raw IST date + time to backend
+    const res = await fetch(`${API}/appointments/my`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({ doctor_id, date, time })
     });
+
+    if (res.status === 401) { 
+      localStorage.clear(); 
+      return location.replace("login.html"); 
+    }
+
+    const data = await res.json();
+    if (!res.ok) return setMsg("bookMsg", data.error || "Booking failed", "error");
+
+    setMsg("bookMsg", "✅ Appointment booked");
+    await loadAppointments();
+    await loadAvailability(doctor_id);
+  } catch (e) {
+    console.error(e);
+    setMsg("bookMsg", "Server error", "error");
+  }
+});
+
 
     /* ---------- Files (patient) ---------- */
     async function loadMyFiles() {
@@ -373,6 +393,28 @@
       }
     };
 
+    // ✅ Utility function to format UTC datetime into IST for display
+function formatDateToIST(dateString) {
+  if (!dateString) return "";
+
+  // Parse date normally
+  const dt = new Date(dateString);
+
+  // Subtract 5h30m
+  dt.setMinutes(dt.getMinutes() - 330);
+
+  return dt.toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  });
+}
+
+
+
     /* ---------- Appointments list & manage ---------- */
     async function loadAppointments() {
       const tbody = document.querySelector("#appointmentsTable tbody");
@@ -398,7 +440,9 @@
           const tr = document.createElement("tr");
           tr.className = isCancelled ? "opacity-60" : "";
           const doctorLabel = a.doctor_name || doctorNameById.get(a.doctor_id) || a.doctor_id;
-          const display = a.display_time || fmtClinic(a.appointment_date);
+          const display = formatDateToIST(a.appointment_date);
+
+
           tr.innerHTML = `
             <td class="border px-2 py-1">${a.appointment_id}</td>
             <td class="border px-2 py-1 ${isCancelled ? 'line-through' : ''}">${display}</td>
