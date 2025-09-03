@@ -247,44 +247,55 @@ const toIST = (dt) => {
         : `<option value="">No working days</option>`;
     }
 
-    function generateSlots() {
-      const dateVal = document.getElementById("dateSelect").value;
-      const timeSel = document.getElementById("time");
-      timeSel.innerHTML = `<option value="">Loading slots…</option>`;
+  async function generateSlots() {
+  const dateVal = document.getElementById("dateSelect").value;
+  const timeSel = document.getElementById("time");
+  timeSel.innerHTML = `<option value="">Loading slots…</option>`;
 
-      if (!currentDoctor || !dateVal) {
-        timeSel.innerHTML = `<option value="">Select date first</option>`;
-        return;
-      }
+  if (!currentDoctor || !dateVal) {
+    timeSel.innerHTML = `<option value="">Select date first</option>`;
+    return;
+  }
 
-      const allowedDays = (currentDoctor.available_days || "").split(",").map(s => s.trim());
-      const d = new Date(dateVal);
-      if (!allowedDays.includes(wk3(d))) {
-        timeSel.innerHTML = `<option value="">Doctor not available this day</option>`;
-        return;
-      }
+  // ✅ fetch booked slots for this doctor & date
+  let booked = [];
+  try {
+    const res = await fetch(`${API}/appointments/doctor/${currentDoctor.doctor_id}/booked?date=${dateVal}`, {
+      headers: { "Authorization": "Bearer " + token }
+    });
+    if (res.ok) {
+      const arr = await res.json();
 
-      // Slots: value = "HH:mm:ss" (matches stored proc), label = "HH:mm"
-      const slots = [];
-      for (let h = 10; h < 17; h++) {
-        if (h === 14) continue; // lunch hour
-        for (let m = 0; m < 60; m += 60) {
-          const hh = String(h).padStart(2, "0");
-          const mm = m === 0 ? "00" : "30";
-          const sVal = `${hh}:${mm}:00`;
-          const sLbl = `${hh}:${mm}`;
-
-          // Interpret slot as IST
-          const slotDateTime = new Date(`${dateVal}T${sVal}+05:30`);
-          const overlap = bookedSlots.some(b => Math.abs((slotDateTime - b) / 60000) < 60);
-          if (!overlap) slots.push({ value: sVal, label: sLbl });
-        }
-      }
-
-      timeSel.innerHTML = slots.length
-        ? slots.map(s => `<option value="${s.value}">${s.label}</option>`).join("")
-        : `<option>No slots available</option>`;
+      // convert DB UTC → IST using +05:30 trick
+      booked = arr.map(d => new Date(new Date(d).toISOString().replace("Z", "+05:30")));
     }
+  } catch (e) {
+    console.warn("Failed to fetch booked slots", e);
+  }
+
+  // Slots: value = "HH:mm:ss", label = "HH:mm"
+  const slots = [];
+  for (let h = 10; h < 17; h++) {
+    if (h === 14) continue; // lunch hour
+    for (let m = 0; m < 60; m += 60) { // hourly slots
+      const hh = String(h).padStart(2, "0");
+      const mm = "00";
+      const sVal = `${hh}:${mm}:00`;
+      const sLbl = `${hh}:${mm}`;
+
+      const slotDateTime = new Date(`${dateVal}T${sVal}+05:30`);
+
+      // ✅ now both sides (booked & slotDateTime) are IST
+      const overlap = booked.some(b => Math.abs((slotDateTime - b) / 60000) < 60);
+      if (!overlap) slots.push({ value: sVal, label: sLbl });
+    }
+  }
+
+  timeSel.innerHTML = slots.length
+    ? slots.map(s => `<option value="${s.value}">${s.label}</option>`).join("")
+    : `<option>No slots available</option>`;
+}
+
 
    /* ---------- Book ---------- */
 document.getElementById("bookBtn").addEventListener("click", async () => {
