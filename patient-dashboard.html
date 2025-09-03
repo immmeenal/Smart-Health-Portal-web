@@ -268,7 +268,7 @@ const toIST = (dt) => {
       const slots = [];
       for (let h = 10; h < 17; h++) {
         if (h === 14) continue; // lunch hour
-        for (let m = 0; m < 60; m += 30) {
+        for (let m = 0; m < 60; m += 60) {
           const hh = String(h).padStart(2, "0");
           const mm = m === 0 ? "00" : "30";
           const sVal = `${hh}:${mm}:00`;
@@ -297,7 +297,7 @@ document.getElementById("bookBtn").addEventListener("click", async () => {
   }
 // ✅ show loading message immediately
   setMsg("bookMsg", "⏳ Loading... please wait", "success");
-  
+
   try {
     // ✅ Send raw IST date + time to backend
     const res = await fetch(`${API}/appointments/my`, {
