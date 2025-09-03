@@ -295,7 +295,9 @@ document.getElementById("bookBtn").addEventListener("click", async () => {
   if (!doctor_id || !date || !time) {
     return setMsg("bookMsg", "Please select doctor, date and time", "error");
   }
-
+// ✅ show loading message immediately
+  setMsg("bookMsg", "⏳ Loading... please wait", "success");
+  
   try {
     // ✅ Send raw IST date + time to backend
     const res = await fetch(`${API}/appointments/my`, {
