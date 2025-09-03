@@ -82,8 +82,54 @@
             </table>
           </div>
         </div>
+
+        
       </section>
+
+     <!-- Search Appointments by Date -->
+<div class="mt-6 bg-white p-4 rounded-lg shadow-md border border-gray-200">
+  <h3 class="text-lg font-semibold mb-3 text-gray-800">Search Appointments</h3>
+
+  <!-- Date input + button -->
+  <div class="flex items-center gap-3 mb-4">
+    <input type="date" id="searchDateInput"
+           class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none w-48"/>
+    <button onclick="searchAppointmentsByDate()"
+            class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 shadow-sm">
+      Search
+    </button>
+  </div>
+  
+
+</div>
+
+ <!--Scheduled Appointments -->
+      <section class="md:col-span-2 bg-white rounded shadow p-4">
+        <div id="patientAppointmentsByDate" class="text-gray-500">Scheduled Appointments</div>
+
+        <div class="space-y-6">
+          
+          <div>
+            <p class="text-sm mt-1 hidden"></p>
+             <!-- Results table -->
+              <div id="searchResults">
+    <table class="min-w-full border border-gray-300 rounded-lg shadow-sm bg-white">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 border-b">Patient</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 border-b">Time</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 border-b">Status</th>
+        </tr>
+      </thead>
+      <tbody id="searchAppointmentsBody" class="divide-y divide-gray-200 text-sm text-gray-800">
+        <!-- JS will inject rows here -->
+      </tbody>
+    </table>
+  </div>
+            </div>
     </div>
+
+    
   </div>
 
   <script>
@@ -269,6 +315,62 @@ const fmtClinic = (dt) => {
         if (selectedPatient) loadRecords(selectedPatient.patient_id);
       } catch { setMsg("uploadMsg","Server error","error"); }
     }
+
+    async function searchAppointmentsByDate() {
+      const date = document.getElementById("searchDateInput").value;
+      const out = document.getElementById("searchResults");
+
+      if (!date) {
+        out.innerHTML = `<p class="text-red-600">Please select a date</p>`;
+        return;
+      }
+
+      out.innerHTML = `<p class="text-gray-500">Loading…</p>`;
+
+      try {
+        // 🔹 backend: /doctor/appointments?date=YYYY-MM-DD
+        // NEW ✅
+        const res = await fetch(`${API}/appointments/doctor/appointments?date=${date}`, {
+          headers: { "Authorization": "Bearer " + token }
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          out.innerHTML = `<p class="text-red-600">${data.error || "Failed to fetch"}</p>`;
+          return;
+        }
+
+        if (!data.length) {
+          out.innerHTML = `<p class="text-gray-500">No appointments on this date</p>`;
+          return;
+        }
+
+        // render as table
+        out.innerHTML = `
+          <table class="w-full border text-sm mt-2">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="border px-2 py-1 text-left">Patient</th>
+                <th class="border px-2 py-1 text-left">Time</th>
+                <th class="border px-2 py-1 text-left">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.map(a => `
+                <tr>
+                  <td class="border px-2 py-1">${a.patient_name || "Patient #" + a.patient_id}</td>
+                  <td class="border px-2 py-1">${fmtClinic(a.appointment_date)}</td>
+                  <td class="border px-2 py-1">${a.status}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+      } catch (e) {
+        console.error("Search error", e);
+        out.innerHTML = `<p class="text-red-600">Server error</p>`;
+      }
+}
 
     /* ---------- Appointments (only this doctor’s with selected patient) ---------- */
     async function loadAppointments(patientId){
