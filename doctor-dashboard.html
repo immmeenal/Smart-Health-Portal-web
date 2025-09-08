@@ -192,6 +192,8 @@
 
           document.getElementById("profileName").textContent = data.full_name || "Unknown";
           document.getElementById("profileInitial").textContent = data.full_name ? data.full_name.charAt(0).toUpperCase() : "D";
+          // ✅ store doctor_id for filtering records
+          localStorage.setItem("doctor_id", data.doctor_id);
         } catch {
           document.getElementById("profileName").textContent = "Error";
         }
@@ -250,34 +252,55 @@
         setMsg("uploadMsg", "");
       }
 
-      /* ---------- Records (uses your working list endpoint) ---------- */
+      /* ---------- Records (filtered by logged-in doctor) ---------- */
       async function loadRecords(patientId) {
         const ul = document.getElementById("recordsList");
         ul.innerHTML = `<li class="text-gray-500">Loading…</li>`;
+
         try {
-          // Your working endpoint:
+          // Fetch all records for the patient
           const res = await fetch(`${API}/doctor/patient/${patientId}/records`, {
             headers: { "Authorization": "Bearer " + token }
           });
-          if (!res.ok) { ul.innerHTML = `<li class="text-red-600">Failed to load records</li>`; return; }
+          if (!res.ok) {
+            ul.innerHTML = `<li class="text-red-600">Failed to load records</li>`;
+            return;
+          }
+
           const data = await res.json();
-          if (!data.length) { ul.innerHTML = `<li class="text-gray-500">No records</li>`; return; }
+          if (!data.length) {
+            ul.innerHTML = `<li class="text-gray-500">No records</li>`;
+            return;
+          }
+
+          // ✅ Filter only records uploaded by the logged-in doctor
+          const loggedInDoctorId = parseInt(localStorage.getItem("doctor_id"));
+          const filteredRecords = data.filter(r => r.doctor_id === loggedInDoctorId);
+
+          if (!filteredRecords.length) {
+            ul.innerHTML = `<li class="text-gray-500">No records uploaded by you</li>`;
+            return;
+          }
+
+          // Render filtered records
           ul.innerHTML = "";
-          data.forEach(r => {
+          filteredRecords.forEach(r => {
             const name = r.file_name || r.file_path?.split("/").pop() || "file";
             const li = document.createElement("li");
             li.className = "mb-2 list-disc list-inside"; // bullet + inside alignment
             li.innerHTML = `
-    <span class="text-blue-700 underline cursor-pointer" onclick="viewRecord(${r.record_id})">${name}</span>
-    <button class="text-red-600 text-xs underline ml-2" onclick="deleteFile(${r.record_id})">Delete</button>
-    ${r.description ? `<div class="text-xs text-gray-600 ml-4 break-words">📝 ${r.description}</div>` : ""}
-  `;
+        <span class="text-blue-700 underline cursor-pointer" onclick="viewRecord(${r.record_id})">${name}</span>
+        <button class="text-red-600 text-xs underline ml-2" onclick="deleteFile(${r.record_id})">Delete</button>
+        ${r.description ? `<div class="text-xs text-gray-600 ml-4 break-words">📝 ${r.description}</div>` : ""}
+      `;
             ul.appendChild(li);
           });
 
-
-        } catch { ul.innerHTML = `<li class="text-red-600">Error loading records</li>`; }
+        } catch {
+          ul.innerHTML = `<li class="text-red-600">Error loading records</li>`;
+        }
       }
+
 
       // NEW: fetch signed URL then open
       window.viewRecord = async function (recordId) {
