@@ -103,7 +103,10 @@
                 document.getElementById("profileName").textContent = "Unknown Patient";
             }
         }
-
+        // Click on profile section → patientProfile.html
+        document.getElementById("profileLink").addEventListener("click", () => {
+            window.location.href = "patientProfile.html";
+        });
         // Doctors dropdown
         async function loadDoctorsForUpload() {
             try {
