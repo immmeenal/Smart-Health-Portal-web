@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Patient Files</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[linear-gradient(to_right,_#bfdbfe_0%,_#bfdbfe_20%,_white_100%)] p-6">
+
+    <div class="max-w-5xl mx-auto space-y-6">
+
+        <!-- Profile Header -->
+        <div class="flex items-center gap-4 cursor-pointer" id="profileLink">
+            <div
+                class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center text-white text-xl font-bold">
+                <span id="profileInitial">P</span>
+            </div>
+            <div>
+                <p id="profileName" class="font-semibold text-lg">Loading...</p>
+                <p class="text-sm text-gray-500">View Profile</p>
+            </div>
+        </div>
+
+        <!-- Navbar -->
+        <header class="flex items-center justify-between border-b pb-2 mb-4">
+            <nav class="flex gap-6">
+                <a href="patientDashboard.html" class="font-semibold text-lg text-gray-600 hover:text-green-700">
+                    My Appointments
+                </a>
+                <a href="patientFiles.html"
+                    class="font-semibold text-lg text-green-700 border-b-2 border-green-700 pb-1">
+                    My Medical Files
+                </a>
+            </nav>
+            <button id="logoutBtn" class="text-red-600 underline text-sm">Logout</button>
+        </header>
+
+        <!-- My Medical Files -->
+        <section class="bg-white rounded shadow p-4">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="font-semibold">My Medical Files</h2>
+            </div>
+
+            <form id="uploadForm" class="grid md:grid-cols-3 gap-3 items-end">
+                <!-- File -->
+                <div>
+                    <label class="block text-sm font-medium">Select File</label>
+                    <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" class="mt-1 text-sm" required />
+                </div>
+
+                <!-- Doctor -->
+                <div>
+                    <label class="block text-sm font-medium">Doctor</label>
+                    <select id="doctorSelect" class="mt-1 w-full border px-2 py-1 rounded text-sm" required>
+                        <option value="">Select a doctor</option>
+                    </select>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label class="block text-sm font-medium">Description</label>
+                    <input type="text" id="descriptionInput" placeholder="e.g., Blood test report"
+                        class="mt-1 w-full border px-2 py-1 rounded text-sm" />
+                </div>
+
+                <!-- Submit -->
+                <div class="md:col-span-3 flex justify-end">
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                        Upload
+                    </button>
+                </div>
+            </form>
+
+            <p id="uploadMsg" class="text-sm mt-1 hidden"></p>
+            <ul id="recordsList" class="list-disc list-inside text-sm text-blue-700 mt-2"></ul>
+        </section>
+    </div>
+
+    <script>
+        const API = "https://healthcareapi-afeqega5ghgkh6hg.centralindia-01.azurewebsites.net/api";
+        const token = localStorage.getItem("token");
+        const role = (localStorage.getItem("role") || "").toLowerCase();
+
+        if (!token || role !== "patient") {
+            window.location.replace("login.html");
+        }
+
+        // Load patient profile info
+        async function loadProfileHeader() {
+            try {
+                const res = await fetch(`${API}/patient/me`, {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                if (res.status === 401) { localStorage.clear(); return location.replace("login.html"); }
+                const data = await res.json();
+                const name = data.full_name || "Patient";
+                document.getElementById("profileName").textContent = name;
+                document.getElementById("profileInitial").textContent = name.charAt(0).toUpperCase();
+            } catch {
+                document.getElementById("profileName").textContent = "Unknown Patient";
+            }
+        }
+
+        // Doctors dropdown
+        async function loadDoctorsForUpload() {
+            try {
+                const res = await fetch(`${API}/doctor/list`);
+                const docs = await res.json();
+                const sel = document.getElementById("doctorSelect");
+                sel.innerHTML = `<option value="">Select a doctor</option>`;
+                docs.forEach(d => {
+                    const opt = document.createElement("option");
+                    opt.value = d.full_name;
+                    opt.textContent = `${d.full_name} (${d.specialization})`;
+                    sel.appendChild(opt);
+                });
+            } catch {
+                setMsg("uploadMsg", "Failed to load doctors", "error");
+            }
+        }
+
+        // Messages
+        function setMsg(id, text = "", type = "info") {
+            const el = document.getElementById(id);
+            if (!text) { el.textContent = ""; el.className = "text-sm hidden"; return; }
+            el.textContent = text;
+            el.className = "text-sm " + (type === "error" ? "text-red-600" : "text-green-700");
+            el.classList.remove("hidden");
+            if (id !== "uploadMsg") setTimeout(() => setMsg(id, ""), 1500);
+        }
+
+        // Upload
+        document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const f = document.getElementById("fileInput").files[0];
+            const doc = document.getElementById("doctorSelect").value;
+            const desc = document.getElementById("descriptionInput").value.trim();
+
+            if (!f || !doc) return setMsg("uploadMsg", "File and doctor required", "error");
+
+            try {
+                const fd = new FormData();
+                fd.append("file", f);
+                fd.append("doctorName", doc);
+                if (desc) fd.append("description", desc);
+
+                const res = await fetch(`${API}/records/upload`, {
+                    method: "POST",
+                    headers: { "Authorization": "Bearer " + token },
+                    body: fd
+                });
+
+                const data = await res.json();
+                if (!res.ok) return setMsg("uploadMsg", data.error || "Upload failed", "error");
+
+                setMsg("uploadMsg", "✅ Uploaded");
+                document.getElementById("fileInput").value = "";
+                document.getElementById("descriptionInput").value = "";
+                document.getElementById("doctorSelect").value = "";
+                loadMyFiles();
+            } catch {
+                setMsg("uploadMsg", "Server error", "error");
+            }
+        });
+
+        // Load records
+        async function loadMyFiles() {
+            const ul = document.getElementById("recordsList");
+            ul.innerHTML = `<li class="text-gray-500">Loading…</li>`;
+            try {
+                const res = await fetch(`${API}/records/my`, {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                if (res.status === 401) { localStorage.clear(); return location.replace("login.html"); }
+                const data = await res.json();
+                if (!res.ok || !Array.isArray(data)) { ul.innerHTML = `<li class="text-red-600">Failed to load</li>`; return; }
+                if (!data.length) { ul.innerHTML = `<li class="text-gray-500">No files</li>`; return; }
+                ul.innerHTML = "";
+                data.forEach(r => {
+                    const name = r.file_name || "file";
+                    const href = r.file_url || `${API}/records/signed/${r.record_id}`;
+                    const li = document.createElement("li");
+                    li.className = "list-disc list-inside flex items-center gap-2";
+                    li.innerHTML = `
+            <a href="${href}" target="_blank" class="hover:underline">${name}</a>
+            <button class="text-red-600 text-xs underline" onclick="deleteFile(${r.record_id})">Delete</button>
+          `;
+                    ul.appendChild(li);
+                });
+            } catch {
+                ul.innerHTML = `<li class="text-red-600">Error</li>`;
+            }
+        }
+
+        // Delete file
+        window.deleteFile = async function (recordId) {
+            if (!confirm("Delete this file?")) return;
+            try {
+                const res = await fetch(`${API}/records/${recordId}`, {
+                    method: "DELETE",
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                const data = await res.json();
+                if (!res.ok) return setMsg("uploadMsg", data.error || "Delete failed", "error");
+                setMsg("uploadMsg", "Deleted");
+                loadMyFiles();
+            } catch {
+                setMsg("uploadMsg", "Server error", "error");
+            }
+        };
+
+        // Boot
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            localStorage.clear(); location.href = "login.html";
+        });
+
+        (async () => {
+            loadProfileHeader();
+            await loadDoctorsForUpload();
+            await loadMyFiles();
+        })();
+    </script>
+</body>
+
+</html>

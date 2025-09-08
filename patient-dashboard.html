@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Patient Dashboard</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-[linear-gradient(to_right,_#bfdbfe_0%,_#bfdbfe_20%,_white_100%)] p-6">
 
   <div class="max-w-5xl mx-auto space-y-6">
-     <!-- Profile Header -->
+    <!-- Profile Header -->
     <div class="flex items-center gap-4 cursor-pointer" id="profileLink">
       <div class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center text-white text-xl font-bold">
         <span id="profileInitial">P</span>
@@ -18,11 +20,22 @@
         <p id="profileName" class="font-semibold text-lg">Loading...</p>
         <p class="text-sm text-gray-500">View Profile</p>
       </div>
-     
+
     </div>
-      
+
     <header class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold">My Appointments</h1>
+      <header class="flex items-center justify-between border-b pb-2 mb-4">
+        <nav class="flex gap-6">
+          <a href="patientDashboard.html" class="font-semibold text-lg text-green-700 border-b-2 border-green-700 pb-1">
+            My Appointments
+          </a>
+          <a href="patientFiles.html" class="font-semibold text-lg text-gray-600 hover:text-green-700">
+            My Medical Files
+          </a>
+        </nav>
+        <button id="logoutBtn" class="text-red-600 underline text-sm">Logout</button>
+      </header>
+
       <button id="logoutBtn" class="text-red-600 underline text-sm">Logout</button>
     </header>
 
@@ -34,10 +47,8 @@
         <!-- Doctor -->
         <div class="md:col-span-3">
           <label class="block text-sm font-medium">Select Doctor</label>
-          <select id="doctor_id"
-                  class="mt-1 w-full border px-3 py-2 rounded"
-                  required
-                  onchange="loadAvailability(this.value)">
+          <select id="doctor_id" class="mt-1 w-full border px-3 py-2 rounded" required
+            onchange="loadAvailability(this.value)">
             <option value="">Select a doctor</option>
           </select>
           <div id="availability" class="text-sm text-gray-600 mt-2"></div>
@@ -46,10 +57,7 @@
         <!-- Available dates (only working days) -->
         <div>
           <label class="block text-sm font-medium">Available Dates</label>
-          <select id="dateSelect"
-                  class="mt-1 w-full border px-3 py-2 rounded"
-                  required
-                  onchange="generateSlots()">
+          <select id="dateSelect" class="mt-1 w-full border px-3 py-2 rounded" required onchange="generateSlots()">
             <option value="">Select a doctor first</option>
           </select>
         </div>
@@ -74,49 +82,44 @@
 
     <!-- My files -->
     <!-- My files -->
-<section class="bg-white rounded shadow p-4">
-  <div class="flex items-center justify-between mb-3">
-    <h2 class="font-semibold">My Medical Files</h2>
-  </div>
+    <section class="bg-white rounded shadow p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-semibold">My Medical Files</h2>
+      </div>
 
-  <form id="uploadForm" class="grid md:grid-cols-3 gap-3 items-end">
-    <!-- File -->
-    <div>
-      <label class="block text-sm font-medium">Select File</label>
-      <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png"
-             class="mt-1 text-sm" required />
-    </div>
+      <form id="uploadForm" class="grid md:grid-cols-3 gap-3 items-end">
+        <!-- File -->
+        <div>
+          <label class="block text-sm font-medium">Select File</label>
+          <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" class="mt-1 text-sm" required />
+        </div>
 
-    <!-- Doctor -->
-    <div>
-      <label class="block text-sm font-medium">Doctor</label>
-      <select id="doctorSelect"
-              class="mt-1 w-full border px-2 py-1 rounded text-sm"
-              required>
-        <option value="">Select a doctor</option>
-      </select>
-    </div>
+        <!-- Doctor -->
+        <div>
+          <label class="block text-sm font-medium">Doctor</label>
+          <select id="doctorSelect" class="mt-1 w-full border px-2 py-1 rounded text-sm" required>
+            <option value="">Select a doctor</option>
+          </select>
+        </div>
 
-    <!-- Description -->
-    <div>
-      <label class="block text-sm font-medium">Description</label>
-      <input type="text" id="descriptionInput"
-             placeholder="e.g., Blood test report"
-             class="mt-1 w-full border px-2 py-1 rounded text-sm" />
-    </div>
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-medium">Description</label>
+          <input type="text" id="descriptionInput" placeholder="e.g., Blood test report"
+            class="mt-1 w-full border px-2 py-1 rounded text-sm" />
+        </div>
 
-    <!-- Submit -->
-    <div class="md:col-span-3 flex justify-end">
-      <button type="submit"
-              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-        Upload
-      </button>
-    </div>
-  </form>
+        <!-- Submit -->
+        <div class="md:col-span-3 flex justify-end">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+            Upload
+          </button>
+        </div>
+      </form>
 
-  <p id="uploadMsg" class="text-sm mt-1 hidden"></p>
-  <ul id="recordsList" class="list-disc list-inside text-sm text-blue-700 mt-2"></ul>
-</section>
+      <p id="uploadMsg" class="text-sm mt-1 hidden"></p>
+      <ul id="recordsList" class="list-disc list-inside text-sm text-blue-700 mt-2"></ul>
+    </section>
 
 
     <!-- Appointments -->
@@ -139,9 +142,9 @@
   </div>
 
   <script>
-    const API   = "https://healthcareapi-afeqega5ghgkh6hg.centralindia-01.azurewebsites.net/api";
+    const API = "https://healthcareapi-afeqega5ghgkh6hg.centralindia-01.azurewebsites.net/api";
     const token = localStorage.getItem("token");
-    const role  = (localStorage.getItem("role") || "").toLowerCase();
+    const role = (localStorage.getItem("role") || "").toLowerCase();
 
     // Guard: only patients can use this page
     if (!token || role !== "patient") {
@@ -174,21 +177,21 @@
     // doctorId -> name cache (for table rendering)
     const doctorNameById = new Map();
 
-const toIST = (dt) => {
-  if (!dt) return "";
+    const toIST = (dt) => {
+      if (!dt) return "";
 
-  // Remove timezone marker (treat as local IST string)
-  const clean = dt.replace("Z", "");
+      // Remove timezone marker (treat as local IST string)
+      const clean = dt.replace("Z", "");
 
-  const [datePart, timePart] = clean.split("T");
-  const [year, month, day]   = datePart.split("-").map(Number);
-  const [hh, mm, ss]         = (timePart || "00:00:00").split(":").map(Number);
+      const [datePart, timePart] = clean.split("T");
+      const [year, month, day] = datePart.split("-").map(Number);
+      const [hh, mm, ss] = (timePart || "00:00:00").split(":").map(Number);
 
-  return new Date(year, month - 1, day, hh, mm, ss).toLocaleString("en-IN", {
-    year: "numeric", month: "short", day: "numeric",
-    hour: "numeric", minute: "2-digit", hour12: true
-  });
-};
+      return new Date(year, month - 1, day, hh, mm, ss).toLocaleString("en-IN", {
+        year: "numeric", month: "short", day: "numeric",
+        hour: "numeric", minute: "2-digit", hour12: true
+      });
+    };
 
 
     function setMsg(id, text = "", type = "info") {
@@ -201,56 +204,56 @@ const toIST = (dt) => {
     }
 
 
-// Populate doctor dropdown (reuse loadDoctors)
-async function loadDoctorsForUpload() {
-  try {
-    const res = await fetch(`${API}/doctor/list`);
-    const docs = await res.json();
-    const sel = document.getElementById("doctorSelect");
-    sel.innerHTML = `<option value="">Select a doctor</option>`;
-    docs.forEach(d => {
-      const opt = document.createElement("option");
-      opt.value = d.full_name; // ✅ we need name because backend expects doctorName
-      opt.textContent = `${d.full_name} (${d.specialization})`;
-      sel.appendChild(opt);
+    // Populate doctor dropdown (reuse loadDoctors)
+    async function loadDoctorsForUpload() {
+      try {
+        const res = await fetch(`${API}/doctor/list`);
+        const docs = await res.json();
+        const sel = document.getElementById("doctorSelect");
+        sel.innerHTML = `<option value="">Select a doctor</option>`;
+        docs.forEach(d => {
+          const opt = document.createElement("option");
+          opt.value = d.full_name; // ✅ we need name because backend expects doctorName
+          opt.textContent = `${d.full_name} (${d.specialization})`;
+          sel.appendChild(opt);
+        });
+      } catch {
+        setMsg("uploadMsg", "Failed to load doctors", "error");
+      }
+    }
+
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const f = document.getElementById("fileInput").files[0];
+      const doc = document.getElementById("doctorSelect").value;
+      const desc = document.getElementById("descriptionInput").value.trim();
+
+      if (!f || !doc) return setMsg("uploadMsg", "File and doctor required", "error");
+
+      try {
+        const fd = new FormData();
+        fd.append("file", f);
+        fd.append("doctorName", doc);
+        if (desc) fd.append("description", desc);
+
+        const res = await fetch(`${API}/records/upload`, {
+          method: "POST",
+          headers: { "Authorization": "Bearer " + token },
+          body: fd
+        });
+
+        const data = await res.json();
+        if (!res.ok) return setMsg("uploadMsg", data.error || "Upload failed", "error");
+
+        setMsg("uploadMsg", "✅ Uploaded");
+        document.getElementById("fileInput").value = "";
+        document.getElementById("descriptionInput").value = "";
+        document.getElementById("doctorSelect").value = "";
+        loadMyFiles();
+      } catch {
+        setMsg("uploadMsg", "Server error", "error");
+      }
     });
-  } catch {
-    setMsg("uploadMsg", "Failed to load doctors", "error");
-  }
-}
-
-document.getElementById("uploadForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const f   = document.getElementById("fileInput").files[0];
-  const doc = document.getElementById("doctorSelect").value;
-  const desc = document.getElementById("descriptionInput").value.trim();
-
-  if (!f || !doc) return setMsg("uploadMsg", "File and doctor required", "error");
-
-  try {
-    const fd = new FormData();
-    fd.append("file", f);
-    fd.append("doctorName", doc);
-    if (desc) fd.append("description", desc);
-
-    const res = await fetch(`${API}/records/upload`, {
-      method: "POST",
-      headers: { "Authorization": "Bearer " + token },
-      body: fd
-    });
-
-    const data = await res.json();
-    if (!res.ok) return setMsg("uploadMsg", data.error || "Upload failed", "error");
-
-    setMsg("uploadMsg", "✅ Uploaded");
-    document.getElementById("fileInput").value = "";
-    document.getElementById("descriptionInput").value = "";
-    document.getElementById("doctorSelect").value = "";
-    loadMyFiles();
-  } catch {
-    setMsg("uploadMsg", "Server error", "error");
-  }
-});
 
 
     /* ---------- Doctors & availability ---------- */
@@ -298,7 +301,7 @@ document.getElementById("uploadForm").addEventListener("submit", async (e) => {
       const dateSel = document.getElementById("dateSelect");
       const timeSel = document.getElementById("time");
       dateSel.innerHTML = `<option value="">Loading…</option>`;
-      timeSel.innerHTML  = `<option value="">Select date first</option>`;
+      timeSel.innerHTML = `<option value="">Select date first</option>`;
       document.getElementById("availability").textContent = "";
 
       if (!doctorId) {
@@ -314,7 +317,7 @@ document.getElementById("uploadForm").addEventListener("submit", async (e) => {
       }
       const data = await res.json();
       currentDoctor = data;
-      bookedSlots   = data.booked.map(d => new Date(d));
+      bookedSlots = data.booked.map(d => new Date(d));
 
       const allowed = (data.available_days || "").split(",").map(s => s.trim()).filter(Boolean);
       document.getElementById("availability").innerText =
@@ -328,99 +331,99 @@ document.getElementById("uploadForm").addEventListener("submit", async (e) => {
       }
       dateSel.innerHTML = options.length
         ? `<option value="">Select a date</option>` +
-          options.map(o => `<option value="${o.value}">${o.label}</option>`).join("")
+        options.map(o => `<option value="${o.value}">${o.label}</option>`).join("")
         : `<option value="">No working days</option>`;
     }
 
-  async function generateSlots() {
-  const dateVal = document.getElementById("dateSelect").value;
-  const timeSel = document.getElementById("time");
-  timeSel.innerHTML = `<option value="">Loading slots…</option>`;
+    async function generateSlots() {
+      const dateVal = document.getElementById("dateSelect").value;
+      const timeSel = document.getElementById("time");
+      timeSel.innerHTML = `<option value="">Loading slots…</option>`;
 
-  if (!currentDoctor || !dateVal) {
-    timeSel.innerHTML = `<option value="">Select date first</option>`;
-    return;
-  }
+      if (!currentDoctor || !dateVal) {
+        timeSel.innerHTML = `<option value="">Select date first</option>`;
+        return;
+      }
 
-  // ✅ fetch booked slots for this doctor & date
-  let booked = [];
-  try {
-    const res = await fetch(`${API}/appointments/doctor/${currentDoctor.doctor_id}/booked?date=${dateVal}`, {
-      headers: { "Authorization": "Bearer " + token }
+      // ✅ fetch booked slots for this doctor & date
+      let booked = [];
+      try {
+        const res = await fetch(`${API}/appointments/doctor/${currentDoctor.doctor_id}/booked?date=${dateVal}`, {
+          headers: { "Authorization": "Bearer " + token }
+        });
+        if (res.ok) {
+          const arr = await res.json();
+
+          // convert DB UTC → IST using +05:30 trick
+          booked = arr.map(d => new Date(new Date(d).toISOString().replace("Z", "+05:30")));
+        }
+      } catch (e) {
+        console.warn("Failed to fetch booked slots", e);
+      }
+
+      // Slots: value = "HH:mm:ss", label = "HH:mm"
+      const slots = [];
+      for (let h = 10; h < 17; h++) {
+        if (h === 14) continue; // lunch hour
+        for (let m = 0; m < 60; m += 60) { // hourly slots
+          const hh = String(h).padStart(2, "0");
+          const mm = "00";
+          const sVal = `${hh}:${mm}:00`;
+          const sLbl = `${hh}:${mm}`;
+
+          const slotDateTime = new Date(`${dateVal}T${sVal}+05:30`);
+
+          // ✅ now both sides (booked & slotDateTime) are IST
+          const overlap = booked.some(b => Math.abs((slotDateTime - b) / 60000) < 60);
+          if (!overlap) slots.push({ value: sVal, label: sLbl });
+        }
+      }
+
+      timeSel.innerHTML = slots.length
+        ? slots.map(s => `<option value="${s.value}">${s.label}</option>`).join("")
+        : `<option>No slots available</option>`;
+    }
+
+
+    /* ---------- Book ---------- */
+    document.getElementById("bookBtn").addEventListener("click", async () => {
+      const doctor_id = document.getElementById("doctor_id").value;
+      const date = document.getElementById("dateSelect").value; // YYYY-MM-DD
+      const time = document.getElementById("time").value;       // HH:mm[:ss]
+
+      if (!doctor_id || !date || !time) {
+        return setMsg("bookMsg", "Please select doctor, date and time", "error");
+      }
+      // ✅ show loading message immediately
+      setMsg("bookMsg", "⏳ Loading... please wait", "success");
+
+      try {
+        // ✅ Send raw IST date + time to backend
+        const res = await fetch(`${API}/appointments/my`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({ doctor_id, date, time })
+        });
+
+        if (res.status === 401) {
+          localStorage.clear();
+          return location.replace("login.html");
+        }
+
+        const data = await res.json();
+        if (!res.ok) return setMsg("bookMsg", data.error || "Booking failed", "error");
+
+        setMsg("bookMsg", "✅ Appointment booked");
+        await loadAppointments();
+        await loadAvailability(doctor_id);
+      } catch (e) {
+        console.error(e);
+        setMsg("bookMsg", "Server error", "error");
+      }
     });
-    if (res.ok) {
-      const arr = await res.json();
-
-      // convert DB UTC → IST using +05:30 trick
-      booked = arr.map(d => new Date(new Date(d).toISOString().replace("Z", "+05:30")));
-    }
-  } catch (e) {
-    console.warn("Failed to fetch booked slots", e);
-  }
-
-  // Slots: value = "HH:mm:ss", label = "HH:mm"
-  const slots = [];
-  for (let h = 10; h < 17; h++) {
-    if (h === 14) continue; // lunch hour
-    for (let m = 0; m < 60; m += 60) { // hourly slots
-      const hh = String(h).padStart(2, "0");
-      const mm = "00";
-      const sVal = `${hh}:${mm}:00`;
-      const sLbl = `${hh}:${mm}`;
-
-      const slotDateTime = new Date(`${dateVal}T${sVal}+05:30`);
-
-      // ✅ now both sides (booked & slotDateTime) are IST
-      const overlap = booked.some(b => Math.abs((slotDateTime - b) / 60000) < 60);
-      if (!overlap) slots.push({ value: sVal, label: sLbl });
-    }
-  }
-
-  timeSel.innerHTML = slots.length
-    ? slots.map(s => `<option value="${s.value}">${s.label}</option>`).join("")
-    : `<option>No slots available</option>`;
-}
-
-
-   /* ---------- Book ---------- */
-document.getElementById("bookBtn").addEventListener("click", async () => {
-  const doctor_id = document.getElementById("doctor_id").value;
-  const date      = document.getElementById("dateSelect").value; // YYYY-MM-DD
-  const time      = document.getElementById("time").value;       // HH:mm[:ss]
-
-  if (!doctor_id || !date || !time) {
-    return setMsg("bookMsg", "Please select doctor, date and time", "error");
-  }
-// ✅ show loading message immediately
-  setMsg("bookMsg", "⏳ Loading... please wait", "success");
-
-  try {
-    // ✅ Send raw IST date + time to backend
-    const res = await fetch(`${API}/appointments/my`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
-      },
-      body: JSON.stringify({ doctor_id, date, time })
-    });
-
-    if (res.status === 401) { 
-      localStorage.clear(); 
-      return location.replace("login.html"); 
-    }
-
-    const data = await res.json();
-    if (!res.ok) return setMsg("bookMsg", data.error || "Booking failed", "error");
-
-    setMsg("bookMsg", "✅ Appointment booked");
-    await loadAppointments();
-    await loadAvailability(doctor_id);
-  } catch (e) {
-    console.error(e);
-    setMsg("bookMsg", "Server error", "error");
-  }
-});
 
 
     /* ---------- Files (patient) ---------- */
@@ -453,7 +456,7 @@ document.getElementById("bookBtn").addEventListener("click", async () => {
       }
     }
 
-    window.deleteFile = async function(recordId) {
+    window.deleteFile = async function (recordId) {
       if (!confirm("Delete this file?")) return;
       try {
         const res = await fetch(`${API}/records/${recordId}`, {
@@ -471,24 +474,24 @@ document.getElementById("bookBtn").addEventListener("click", async () => {
     };
 
     // ✅ Utility function to format UTC datetime into IST for display
-function formatDateToIST(dateString) {
-  if (!dateString) return "";
+    function formatDateToIST(dateString) {
+      if (!dateString) return "";
 
-  // Parse date normally
-  const dt = new Date(dateString);
+      // Parse date normally
+      const dt = new Date(dateString);
 
-  // Subtract 5h30m
-  dt.setMinutes(dt.getMinutes() - 330);
+      // Subtract 5h30m
+      dt.setMinutes(dt.getMinutes() - 330);
 
-  return dt.toLocaleString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true
-  });
-}
+      return dt.toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+      });
+    }
 
 
 
@@ -526,7 +529,7 @@ function formatDateToIST(dateString) {
             <td class="border px-2 py-1">${doctorLabel}</td>
             <td class="border px-2 py-1">
               <select id="${selectId}" class="border rounded px-2 py-1" ${isCancelled ? 'disabled' : ''}>
-                ${["Scheduled","Cancelled","Completed"].map(s => `<option value="${s}" ${s===a.status?"selected":""}>${s}</option>`).join("")}
+                ${["Scheduled", "Cancelled", "Completed"].map(s => `<option value="${s}" ${s === a.status ? "selected" : ""}>${s}</option>`).join("")}
               </select>
             </td>
             <td class="border px-2 py-1">
@@ -549,7 +552,7 @@ function formatDateToIST(dateString) {
       }
     }
 
-    window.saveStatus = async function(id) {
+    window.saveStatus = async function (id) {
       const sel = document.getElementById(`st_${id}`);
       const status = sel.value;
       try {
@@ -568,7 +571,7 @@ function formatDateToIST(dateString) {
       }
     };
 
-    window.cancelAppt = async function(id) {
+    window.cancelAppt = async function (id) {
       if (!confirm("Cancel this appointment?")) return;
       try {
         const res = await fetch(`${API}/appointments/${id}`, {
@@ -600,4 +603,5 @@ function formatDateToIST(dateString) {
     })();
   </script>
 </body>
+
 </html>
