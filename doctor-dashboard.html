@@ -273,11 +273,6 @@
             return;
           }
 
-          // ✅ Filter only records uploaded by the logged-in doctor
-          const loggedInDoctorId = parseInt(localStorage.getItem("doctor_id"));
-          const filteredRecords = data.filter(r => parseInt(r.doctor_id) === loggedInDoctorId);
-
-
           if (!filteredRecords.length) {
             ul.innerHTML = `<li class="text-gray-500">No records uploaded by you</li>`;
             return;
