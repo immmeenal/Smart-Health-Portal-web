@@ -26,7 +26,8 @@
     <header class="flex items-center justify-between">
       <header class="flex items-center justify-between border-b pb-2 mb-4">
         <nav class="flex gap-6">
-          <a href="patientDashboard.html" class="font-semibold text-lg text-green-700 border-b-2 border-green-700 pb-1">
+          <a href="patient-dashboard.html"
+            class="font-semibold text-lg text-green-700 border-b-2 border-green-700 pb-1">
             My Appointments
           </a>
           <a href="patientFiles.html" class="font-semibold text-lg text-gray-600 hover:text-green-700">
@@ -80,46 +81,6 @@
       <p id="bookMsg" class="text-sm hidden"></p>
     </section>
 
-    <!-- My files -->
-    <!-- My files -->
-    <section class="bg-white rounded shadow p-4">
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="font-semibold">My Medical Files</h2>
-      </div>
-
-      <form id="uploadForm" class="grid md:grid-cols-3 gap-3 items-end">
-        <!-- File -->
-        <div>
-          <label class="block text-sm font-medium">Select File</label>
-          <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" class="mt-1 text-sm" required />
-        </div>
-
-        <!-- Doctor -->
-        <div>
-          <label class="block text-sm font-medium">Doctor</label>
-          <select id="doctorSelect" class="mt-1 w-full border px-2 py-1 rounded text-sm" required>
-            <option value="">Select a doctor</option>
-          </select>
-        </div>
-
-        <!-- Description -->
-        <div>
-          <label class="block text-sm font-medium">Description</label>
-          <input type="text" id="descriptionInput" placeholder="e.g., Blood test report"
-            class="mt-1 w-full border px-2 py-1 rounded text-sm" />
-        </div>
-
-        <!-- Submit -->
-        <div class="md:col-span-3 flex justify-end">
-          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-            Upload
-          </button>
-        </div>
-      </form>
-
-      <p id="uploadMsg" class="text-sm mt-1 hidden"></p>
-      <ul id="recordsList" class="list-disc list-inside text-sm text-blue-700 mt-2"></ul>
-    </section>
 
 
     <!-- Appointments -->
@@ -204,56 +165,6 @@
     }
 
 
-    // Populate doctor dropdown (reuse loadDoctors)
-    async function loadDoctorsForUpload() {
-      try {
-        const res = await fetch(`${API}/doctor/list`);
-        const docs = await res.json();
-        const sel = document.getElementById("doctorSelect");
-        sel.innerHTML = `<option value="">Select a doctor</option>`;
-        docs.forEach(d => {
-          const opt = document.createElement("option");
-          opt.value = d.full_name; // ✅ we need name because backend expects doctorName
-          opt.textContent = `${d.full_name} (${d.specialization})`;
-          sel.appendChild(opt);
-        });
-      } catch {
-        setMsg("uploadMsg", "Failed to load doctors", "error");
-      }
-    }
-
-    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const f = document.getElementById("fileInput").files[0];
-      const doc = document.getElementById("doctorSelect").value;
-      const desc = document.getElementById("descriptionInput").value.trim();
-
-      if (!f || !doc) return setMsg("uploadMsg", "File and doctor required", "error");
-
-      try {
-        const fd = new FormData();
-        fd.append("file", f);
-        fd.append("doctorName", doc);
-        if (desc) fd.append("description", desc);
-
-        const res = await fetch(`${API}/records/upload`, {
-          method: "POST",
-          headers: { "Authorization": "Bearer " + token },
-          body: fd
-        });
-
-        const data = await res.json();
-        if (!res.ok) return setMsg("uploadMsg", data.error || "Upload failed", "error");
-
-        setMsg("uploadMsg", "✅ Uploaded");
-        document.getElementById("fileInput").value = "";
-        document.getElementById("descriptionInput").value = "";
-        document.getElementById("doctorSelect").value = "";
-        loadMyFiles();
-      } catch {
-        setMsg("uploadMsg", "Server error", "error");
-      }
-    });
 
 
     /* ---------- Doctors & availability ---------- */
@@ -426,53 +337,6 @@
     });
 
 
-    /* ---------- Files (patient) ---------- */
-    async function loadMyFiles() {
-      const ul = document.getElementById("recordsList");
-      ul.innerHTML = `<li class="text-gray-500">Loading…</li>`;
-      try {
-        const res = await fetch(`${API}/records/my`, {
-          headers: { "Authorization": "Bearer " + token }
-        });
-        if (res.status === 401) { localStorage.clear(); return location.replace("login.html"); }
-        if (!res.ok) { ul.innerHTML = `<li class="text-red-600">Failed to load</li>`; return; }
-        const data = await res.json();
-        if (!data.length) { ul.innerHTML = `<li class="text-gray-500">No files</li>`; return; }
-        ul.innerHTML = "";
-        data.forEach(r => {
-          // backend returns { file_name, file_url } now
-          const name = r.file_name || "file";
-          const href = r.file_url || `${API}/records/signed/${r.record_id}`; // fallback to fresh SAS endpoint
-          const li = document.createElement("li");
-          li.className = "flex items-center gap-3";
-          li.innerHTML = `
-            <a href="${href}" target="_blank" class="hover:underline">${name}</a>
-            <button class="text-red-600 text-xs underline" onclick="deleteFile(${r.record_id})">Delete</button>
-          `;
-          ul.appendChild(li);
-        });
-      } catch {
-        ul.innerHTML = `<li class="text-red-600">Error</li>`;
-      }
-    }
-
-    window.deleteFile = async function (recordId) {
-      if (!confirm("Delete this file?")) return;
-      try {
-        const res = await fetch(`${API}/records/${recordId}`, {
-          method: "DELETE",
-          headers: { "Authorization": "Bearer " + token }
-        });
-        if (res.status === 401) { localStorage.clear(); return location.replace("login.html"); }
-        const data = await res.json();
-        if (!res.ok) return setMsg("uploadMsg", data.error || "Delete failed", "error");
-        setMsg("uploadMsg", "Deleted");
-        loadMyFiles();
-      } catch {
-        setMsg("uploadMsg", "Server error", "error");
-      }
-    };
-
     // ✅ Utility function to format UTC datetime into IST for display
     function formatDateToIST(dateString) {
       if (!dateString) return "";
@@ -597,9 +461,7 @@
     (async () => {
       loadProfileHeader();
       await loadDoctors();
-      await loadDoctorsForUpload();
       await loadAppointments();
-      await loadMyFiles();
     })();
   </script>
 </body>
