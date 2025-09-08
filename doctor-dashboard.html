@@ -55,13 +55,19 @@
             <div class="flex items-center justify-between">
               <h3 class="text-lg font-semibold mb-2">Medical Records</h3>
               <form id="uploadForm" class="flex items-center gap-2">
+                <!-- File input -->
                 <input type="file" id="fileInput" class="text-sm" accept=".pdf,.jpg,.jpeg,.png" required />
+
+                <!-- Description input -->
                 <input type="text" id="descriptionInput" placeholder="Description"
-                  class="border rounded px-2 py-1 text-sm" />
+                  class="border rounded px-2 py-1 text-sm w-48" required />
+
+                <!-- Upload button -->
                 <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">
                   Upload
                 </button>
               </form>
+
 
             </div>
             <p id="uploadMsg" class="text-sm mt-1 hidden"></p>
