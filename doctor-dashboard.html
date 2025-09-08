@@ -266,16 +266,15 @@
           data.forEach(r => {
             const name = r.file_name || r.file_path?.split("/").pop() || "file";
             const li = document.createElement("li");
-            li.className = "mb-2";
+            li.className = "mb-2 list-disc list-inside"; // bullet + inside alignment
             li.innerHTML = `
-    <div class="flex items-center gap-3">
-      <button class="text-blue-700 underline text-left" onclick="viewRecord(${r.record_id})">${name}</button>
-      <button class="text-red-600 text-xs underline" onclick="deleteFile(${r.record_id})">Delete</button>
-    </div>
+    <span class="text-blue-700 underline cursor-pointer" onclick="viewRecord(${r.record_id})">${name}</span>
+    <button class="text-red-600 text-xs underline ml-2" onclick="deleteFile(${r.record_id})">Delete</button>
     ${r.description ? `<div class="text-xs text-gray-600 ml-4 break-words">📝 ${r.description}</div>` : ""}
   `;
             ul.appendChild(li);
           });
+
 
         } catch { ul.innerHTML = `<li class="text-red-600">Error loading records</li>`; }
       }
