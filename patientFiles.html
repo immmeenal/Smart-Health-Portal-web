@@ -75,7 +75,24 @@
             </form>
 
             <p id="uploadMsg" class="text-sm mt-1 hidden"></p>
-            <ul id="recordsList" class="list-disc list-inside text-sm text-blue-700 mt-2"></ul>
+
+            <!-- ✅ Styled Table -->
+            <div class="overflow-x-auto mt-4">
+                <table class="min-w-full border border-gray-300 text-sm">
+                    <thead class="bg-gray-100 text-gray-700 font-semibold">
+                        <tr>
+                            <th class="px-4 py-2 border border-gray-300">#</th>
+                            <th class="px-4 py-2 border border-gray-300">File</th>
+                            <th class="px-4 py-2 border border-gray-300">Description</th>
+                            <th class="px-4 py-2 border border-gray-300">Doctor</th>
+                            <th class="px-4 py-2 border border-gray-300">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recordsList">
+                        <!-- JS will populate rows here -->
+                    </tbody>
+                </table>
+            </div>
         </section>
     </div>
 
@@ -171,6 +188,8 @@
 
         // Load records
         async function loadMyFiles() {
+
+
             const tbody = document.getElementById("recordsList");
             tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-2">Loading…</td></tr>`;
             try {
