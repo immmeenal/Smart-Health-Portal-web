@@ -192,22 +192,24 @@
                     const name = r.file_name || "file";
                     const href = r.file_url || `${API}/records/signed/${r.record_id}`;
                     const desc = r.description || "-";
-                    const doctor = r.doctor_name || "-"; // backend should return doctor name, otherwise join doctor table
+                    const doctor = r.doctor_name || "-"; // needs backend support
 
                     const tr = document.createElement("tr");
+                    tr.className = "hover:bg-gray-50"; // hover effect
                     tr.innerHTML = `
-        <td class="border px-2 py-1">${i + 1}</td>
-        <td class="border px-2 py-1">
-          <a href="${href}" target="_blank" class="text-blue-600 hover:underline">${name}</a>
-        </td>
-        <td class="border px-2 py-1">${desc}</td>
-        <td class="border px-2 py-1">${doctor}</td>
-        <td class="border px-2 py-1">
-          <button class="text-red-600 text-xs underline" onclick="deleteFile(${r.record_id})">Delete</button>
-        </td>
-      `;
+    <td class="px-4 py-2 border border-gray-300">${i + 1}</td>
+    <td class="px-4 py-2 border border-gray-300">
+      <a href="${href}" target="_blank" class="text-blue-600 hover:underline">${name}</a>
+    </td>
+    <td class="px-4 py-2 border border-gray-300">${desc}</td>
+    <td class="px-4 py-2 border border-gray-300">${doctor}</td>
+    <td class="px-4 py-2 border border-gray-300 text-center">
+      <button class="text-red-600 text-xs font-medium hover:underline" onclick="deleteFile(${r.record_id})">Delete</button>
+    </td>
+  `;
                     tbody.appendChild(tr);
                 });
+
             } catch {
                 tbody.innerHTML = `<tr><td colspan="5" class="text-center text-red-600 py-2">Error</td></tr>`;
             }
