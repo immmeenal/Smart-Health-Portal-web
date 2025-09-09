@@ -283,7 +283,8 @@
           const sLbl = `${hh}:${mm}`;
 
           const slotDateTime = new Date(`${dateVal}T${sVal}+05:30`);
-
+          const now = new Date();
+          if (slotDateTime < now) continue;
           // ✅ now both sides (booked & slotDateTime) are IST
           const overlap = booked.some(b => Math.abs((slotDateTime - b) / 60000) < 60);
           if (!overlap) slots.push({ value: sVal, label: sLbl });
