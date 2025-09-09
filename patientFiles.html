@@ -81,10 +81,12 @@
                 <table class="min-w-full border border-gray-300 text-sm">
                     <thead class="bg-gray-100 text-gray-700 font-semibold">
                         <tr>
-                            <th class="px-4 py-2 border border-gray-300">#</th>
-                            <th class="px-4 py-2 border border-gray-300">File</th>
+                            <th class="px-4 py-2 border border-gray-300">ID</th>
+                            <th class="px-4 py-2 border border-gray-300">File Name</th>
                             <th class="px-4 py-2 border border-gray-300">Description</th>
                             <th class="px-4 py-2 border border-gray-300">Doctor</th>
+                            <th class="px-4 py-2 border border-gray-300">
+                                Specialization</th>
                             <th class="px-4 py-2 border border-gray-300">Action</th>
                         </tr>
                     </thead>
@@ -191,7 +193,7 @@
 
 
             const tbody = document.getElementById("recordsList");
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-2">Loading…</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-2">Loading…</td></tr>`;
             try {
                 const res = await fetch(`${API}/records/my`, {
                     headers: { "Authorization": "Bearer " + token }
@@ -199,11 +201,11 @@
                 if (res.status === 401) { localStorage.clear(); return location.replace("login.html"); }
                 const data = await res.json();
                 if (!res.ok || !Array.isArray(data)) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-red-600 py-2">Failed to load</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-red-600 py-2">Failed to load</td></tr>`;
                     return;
                 }
                 if (!data.length) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-2">No files</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-2">No files</td></tr>`;
                     return;
                 }
                 tbody.innerHTML = "";
@@ -212,7 +214,7 @@
                     const href = r.file_url || `${API}/records/signed/${r.record_id}`;
                     const desc = r.description || "-";
                     const doctor = r.doctor_name || "-"; // needs backend support
-
+                    const specialization = r.specialization || "-";
                     const tr = document.createElement("tr");
                     tr.className = "hover:bg-gray-50"; // hover effect
                     tr.innerHTML = `
@@ -222,6 +224,7 @@
     </td>
     <td class="px-4 py-2 border border-gray-300">${desc}</td>
     <td class="px-4 py-2 border border-gray-300">${doctor}</td>
+    <td class="px-4 py-2 border border-gray-300">${specialization}</td>
     <td class="px-4 py-2 border border-gray-300 text-center">
       <button class="text-red-600 text-xs font-medium hover:underline" onclick="deleteFile(${r.record_id})">Delete</button>
     </td>
@@ -230,7 +233,7 @@
                 });
 
             } catch {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-red-600 py-2">Error</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-red-600 py-2">Error</td></tr>`;
             }
         }
 
