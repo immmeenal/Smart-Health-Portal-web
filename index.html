@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Providence</title>
+  <title>MediCare</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     /* Reset */
@@ -26,122 +27,134 @@
       align-items: center;
       padding: 20px 50px;
       background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       position: sticky;
       top: 0;
       z-index: 1000;
     }
+
     .navbar h2 {
       color: #1a4d8f;
       font-weight: 700;
     }
+
     .navbar ul {
       display: flex;
       list-style: none;
     }
+
     .navbar ul li {
       margin-left: 20px;
     }
+
     .navbar ul li a {
       text-decoration: none;
       color: #333;
       font-weight: 500;
       transition: color 0.3s;
     }
+
     .navbar ul li a:hover {
       color: #1a4d8f;
     }
 
     /* Hero */
     .hero {
-  position: relative;
-  height: 100vh; /* Full screen */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: white;
-  overflow: hidden;
-}
+      position: relative;
+      height: 100vh;
+      /* Full screen */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      overflow: hidden;
+    }
 
-.hero::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: url("https://img.freepik.com/premium-photo/abstract-blur-interior-background_103324-743.jpg") no-repeat center center/cover;
-  filter: blur(1px) brightness(0.6); /* blur + dark overlay */
-  z-index: 1;
-}
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("https://img.freepik.com/premium-photo/abstract-blur-interior-background_103324-743.jpg") no-repeat center center/cover;
+      filter: blur(1px) brightness(0.6);
+      /* blur + dark overlay */
+      z-index: 1;
+    }
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-  padding: 20px;
-}
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      padding: 20px;
+    }
 
-.hero h1 {
-  font-size: 2.8rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
 
-.hero p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-  line-height: 1.6;
-}
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
 
-.hero-buttons .btn {
-  display: inline-block;
-  padding: 12px 24px;
-  border-radius: 8px;
-  margin: 0 10px;
-  background: white;
-  color: #1f4e79;
-  font-weight: bold;
-  text-decoration: none;
-  transition: background 0.3s;
-}
+    .hero-buttons .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 8px;
+      margin: 0 10px;
+      background: white;
+      color: #1f4e79;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
 
-.hero-buttons .btn:hover {
-  background: #e6e6e6;
-}
+    .hero-buttons .btn:hover {
+      background: #e6e6e6;
+    }
 
-.btn-secondary {
-  background: transparent;
-  border: 2px solid white;
-  color: white;
-}
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+    }
 
-.btn-secondary:hover {
-  background: white;
-  color: #1f4e79;
-}
+    .btn-secondary:hover {
+      background: white;
+      color: #1f4e79;
+    }
 
 
-    
+
     /* Section styling */
     section {
       padding: 80px 60px;
     }
-    section h2 {
-  text-align: center;
-  margin-bottom: 40px;
-  font-size: 32px;
-  color: #1a4d8f;
-  position: relative;
-}
 
-section h2::after {
-  content: "";
-  display: block;
-  width: 60px;
-  height: 3px;
-  background: #6aa7dc;
-  margin: 12px auto 0;  /* auto keeps it centered */
-  border-radius: 2px;
-}
+    section h2 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 32px;
+      color: #1a4d8f;
+      position: relative;
+    }
+
+    section h2::after {
+      content: "";
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: #6aa7dc;
+      margin: 12px auto 0;
+      /* auto keeps it centered */
+      border-radius: 2px;
+    }
 
 
 
@@ -151,21 +164,25 @@ section h2::after {
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 25px;
     }
+
     .card {
       background: #fff;
       border-radius: 12px;
       padding: 25px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       transition: transform 0.3s, box-shadow 0.3s;
     }
+
     .card:hover {
       transform: translateY(-8px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
     }
+
     .card h3 {
       margin-bottom: 10px;
       color: #1a4d8f;
     }
+
     .card p {
       font-size: 16px;
       line-height: 1.6;
@@ -183,6 +200,7 @@ section h2::after {
       transform: translateY(40px);
       transition: all 0.8s ease;
     }
+
     .reveal.active {
       opacity: 1;
       transform: translateY(0);
@@ -199,10 +217,12 @@ section h2::after {
 
 
     footer {
-      background: #1a4d8f; color: #fff;
+      background: #1a4d8f;
+      color: #fff;
       padding: 40px 20px;
       margin-top: 40px;
     }
+
     .footer-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -211,6 +231,7 @@ section h2::after {
       margin: auto;
       text-align: left;
     }
+
     .footer-container h3 {
       margin-bottom: 15px;
       font-size: 18px;
@@ -219,58 +240,65 @@ section h2::after {
       padding-bottom: 5px;
     }
 
-    .footer-container p, .footer-container a {
+    .footer-container p,
+    .footer-container a {
       font-size: 14px;
       color: #f0f0f0;
       text-decoration: none;
     }
-    .footer-container a:hover { text-decoration: underline; }
+
+    .footer-container a:hover {
+      text-decoration: underline;
+    }
+
     .footer-bottom {
       text-align: center;
       margin-top: 20px;
       font-size: 13px;
-      border-top: 1px solid rgba(255,255,255,0.3);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
       padding-top: 10px;
     }
   </style>
 </head>
+
 <body>
 
   <!-- Navbar -->
   <nav class="navbar">
-    <h2>Providence</h2>
+    <h2>MediCare</h2>
     <ul>
       <li><a href="#about">About Us</a></li>
       <li><a href="#services">Services</a></li>
       <li><a href="#testimonials">Testimonials</a></li>
       <li><a href="#news">News</a></li>
       <li><a href="login.html">Sign in</a></li>
-<li><a href="register.html">Register</a></li>
+      <li><a href="register.html">Register</a></li>
 
     </ul>
   </nav>
 
   <!-- Hero -->
   <section class="hero">
-  <div class="hero-content">
-    <h1>Compassionate Care, Advanced Treatment</h1>
-    <p>
-      At Providence, we combine medical excellence with compassion and commitment, 
-      ensuring every patient receives the highest level of care and comfort.
-    </p>
-    <div class="hero-buttons">
-      
-      <a href="#about" class="btn btn-secondary">Learn More</a>
+    <div class="hero-content">
+      <h1>Compassionate Care, Advanced Treatment</h1>
+      <p>
+        At MediCare, we combine medical excellence with compassion and commitment,
+        ensuring every patient receives the highest level of care and comfort.
+      </p>
+      <div class="hero-buttons">
+
+        <a href="#about" class="btn btn-secondary">Learn More</a>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <!-- About -->
   <section id="about" class="reveal">
     <h2>About Us</h2>
     <p style="text-align:center; max-width:800px; margin:0 auto;">
-      Providence has been serving the community with world-class healthcare services for over a decade. 
-      Our highly qualified doctors, modern infrastructure, and patient-first approach make us one of the most trusted medical institutions. 
+      MediCare has been serving the community with world-class healthcare services for over a decade.
+      Our highly qualified doctors, modern infrastructure, and patient-first approach make us one of the most trusted
+      medical institutions.
       We believe in not just treating illnesses, but also promoting wellness and preventive care.
     </p>
   </section>
@@ -281,19 +309,23 @@ section h2::after {
     <div class="cards">
       <div class="card">
         <h3>General Medicine</h3>
-        <p>Our general medicine department provides complete care — from preventive checkups to managing chronic conditions — ensuring your long-term health and wellness.</p>
+        <p>Our general medicine department provides complete care — from preventive checkups to managing chronic
+          conditions — ensuring your long-term health and wellness.</p>
       </div>
       <div class="card">
         <h3>Cardiology</h3>
-        <p>Equipped with advanced technology and a team of experienced cardiologists, we specialize in diagnostics, treatment, and rehabilitation for heart-related conditions.</p>
+        <p>Equipped with advanced technology and a team of experienced cardiologists, we specialize in diagnostics,
+          treatment, and rehabilitation for heart-related conditions.</p>
       </div>
       <div class="card">
         <h3>Neurology</h3>
-        <p>Our neurology experts provide comprehensive care for disorders of the brain, spine, and nerves, combining advanced treatments with compassionate support.</p>
+        <p>Our neurology experts provide comprehensive care for disorders of the brain, spine, and nerves, combining
+          advanced treatments with compassionate support.</p>
       </div>
       <div class="card">
         <h3>Pediatrics</h3>
-        <p>Our pediatricians focus on the physical, emotional, and social health of children, ensuring every child grows up healthy, safe, and cared for.</p>
+        <p>Our pediatricians focus on the physical, emotional, and social health of children, ensuring every child grows
+          up healthy, safe, and cared for.</p>
       </div>
     </div>
   </section>
@@ -303,13 +335,16 @@ section h2::after {
     <h2>Patient Testimonials</h2>
     <div class="cards">
       <div class="card">
-        <p>“The doctors were extremely attentive and caring. From my first consultation to the final check-up, I felt confident that I was in safe hands.”</p>
+        <p>“The doctors were extremely attentive and caring. From my first consultation to the final check-up, I felt
+          confident that I was in safe hands.”</p>
       </div>
       <div class="card">
-        <p>“Providence facilities are modern and spotless. The nursing staff went above and beyond to make my stay comfortable.”</p>
+        <p>MediCare facilities are modern and spotless. The nursing staff went above and beyond to make my stay
+          comfortable.”</p>
       </div>
       <div class="card">
-        <p>“Their commitment to patient care is outstanding. I felt supported and informed throughout my treatment journey.”</p>
+        <p>“Their commitment to patient care is outstanding. I felt supported and informed throughout my treatment
+          journey.”</p>
       </div>
     </div>
   </section>
@@ -320,15 +355,18 @@ section h2::after {
     <div class="cards">
       <div class="card">
         <h3>New Cardiology Wing</h3>
-        <p>We are excited to announce the upcoming launch of our state-of-the-art Cardiology Wing, dedicated to advanced heart care treatments and diagnostics.</p>
+        <p>We are excited to announce the upcoming launch of our state-of-the-art Cardiology Wing, dedicated to advanced
+          heart care treatments and diagnostics.</p>
       </div>
       <div class="card">
         <h3>Free Health Check-up Camp</h3>
-        <p>Join us this Sunday for a free health check-up camp, open to all age groups. Early detection saves lives — don’t miss this opportunity.</p>
+        <p>Join us this Sunday for a free health check-up camp, open to all age groups. Early detection saves lives —
+          don’t miss this opportunity.</p>
       </div>
       <div class="card">
         <h3>COVID-19 Vaccination Drive</h3>
-        <p>Our vaccination drive continues with booster shots available for all eligible groups. Protect yourself and your loved ones by registering today.</p>
+        <p>Our vaccination drive continues with booster shots available for all eligible groups. Protect yourself and
+          your loved ones by registering today.</p>
       </div>
     </div>
   </section>
@@ -337,22 +375,26 @@ section h2::after {
   <footer>
 
     <!-- Top Nav and Social Icons -->
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; border-bottom:1px solid #ccc; padding-bottom:15px;">
-      
+    <div
+      style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; border-bottom:1px solid #ccc; padding-bottom:15px;">
+
       <!-- Nav Links -->
       <nav style="margin-bottom:15px;">
         <a href="index.html" style="color:white; margin:0 10px; text-decoration:none;">Home</a> |
         <a href="about.html" style="color:white; margin:0 10px; text-decoration:none;">About Us</a> |
         <a href="services.html" style="color:white; margin:0 10px; text-decoration:none;">What We Do</a> |
-        <a href="life.html" style="color:white; margin:0 10px; text-decoration:none;">Life at Providence India</a> |
+        <a href="life.html" style="color:white; margin:0 10px; text-decoration:none;">Life at MediCare India</a> |
         <a href="careers.html" style="color:white; margin:0 10px; text-decoration:none;">Careers</a>
       </nav>
-      
+
       <!-- Social Icons -->
       <div style="display:flex; gap:10px;">
-        <a href="https://www.linkedin.com/company/providence-india/" target="_blank" style="width:40px; height:40px; border:1px solid white; border-radius:50%; display:flex; justify-content:center; align-items:center; color:white; text-decoration:none;">in</a>
-        <a href="https://www.instagram.com/providenceindiahyd/?hl=en" target="_blank" style="width:40px; height:40px; border:1px solid white; border-radius:50%; display:flex; justify-content:center; align-items:center; color:white; text-decoration:none;">📷</a>
-        <a href="https://www.youtube.com/channel/UC_B-jUZcs7iYK1QF92lipbA" target="_blank" style="width:40px; height:40px; border:1px solid white; border-radius:50%; display:flex; justify-content:center; align-items:center; color:white; text-decoration:none;">▶</a>
+        <a href="https://www.linkedin.com/company/providence-india/" target="_blank"
+          style="width:40px; height:40px; border:1px solid white; border-radius:50%; display:flex; justify-content:center; align-items:center; color:white; text-decoration:none;">in</a>
+        <a href="https://www.instagram.com/providenceindiahyd/?hl=en" target="_blank"
+          style="width:40px; height:40px; border:1px solid white; border-radius:50%; display:flex; justify-content:center; align-items:center; color:white; text-decoration:none;">📷</a>
+        <a href="https://www.youtube.com/channel/UC_B-jUZcs7iYK1QF92lipbA" target="_blank"
+          style="width:40px; height:40px; border:1px solid white; border-radius:50%; display:flex; justify-content:center; align-items:center; color:white; text-decoration:none;">▶</a>
       </div>
     </div>
 
@@ -360,21 +402,23 @@ section h2::after {
     <br>
     <div class="footer-container">
       <div>
-        <h3>About Providence</h3>
-        <p>Providence Hospital is dedicated to compassionate care and advanced medical treatments. Serving our community with excellence and trust for over 10 years.</p>
+        <h3>About MediCare</h3>
+        <p>MediCare Hospital is dedicated to compassionate care and advanced medical treatments. Serving our community
+          with excellence and trust for over 10 years.</p>
       </div>
       <div>
         <h3>Contact</h3>
-        <p>Email: <a href="mailto:info@providencehospital.com">info@providencehospital.com</a></p>
+        <p>Email: <a href="mailto:info@providencehospital.com">info@MediCarehospital.com</a></p>
         <p>Phone: +91 98765 43210</p>
       </div>
       <div>
         <h3>Location</h3>
-        <p>Providence Hospital<br>Providence Global Center, 8th Floor, Skyview 10 83/1, Raidurgam, Hitech City Main Rd, Hyderabad, Telangana 500081, India</p>
+        <p>MediCare Hospital<br>MediCare Global Center, 8th Floor, Skyview 10 83/1, Raidurgam, Hitech City Main Rd,
+          Hyderabad, Telangana 500081, India</p>
       </div>
     </div>
     <div class="footer-bottom">
-      &copy;2025 Providence Global Center.
+      &copy;2025 MediCare Global Center.
     </div>
   </footer>
 
@@ -399,4 +443,5 @@ section h2::after {
   </script>
 
 </body>
+
 </html>
